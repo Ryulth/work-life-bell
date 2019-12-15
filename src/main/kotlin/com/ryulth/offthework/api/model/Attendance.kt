@@ -1,6 +1,9 @@
 package com.ryulth.offthework.api.model
 
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -13,12 +16,14 @@ import javax.persistence.UniqueConstraint
  */
 @Entity
 @Table(name = "Attendance",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["userId", "goToWorkDateTime"])]
+    uniqueConstraints = [
+        UniqueConstraint(columnNames = ["userId", "goToWorkDate"])
+    ]
 )
-data class Attendance(
+data class Attendance (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null,
     val userId: Long,
-    val goToWorkDateTime: OffsetDateTime = OffsetDateTime.now(),
-    val getOffWorkDateTime: OffsetDateTime ? = null,
-    val timeOffset: String = OffsetDateTime.now().offset.toString()
+    val goToWorkDate: String,
+    val goToWorkDateTime: String,
+    val getOffWorkDateTime: String ? = null
 )
