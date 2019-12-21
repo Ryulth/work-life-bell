@@ -6,6 +6,7 @@ import com.ryulth.offthework.api.model.User
 import com.ryulth.offthework.api.model.request.EmailLoginRequest
 import com.ryulth.offthework.api.model.request.EmailRegisterRequest
 import com.ryulth.offthework.api.service.EmailUserService
+import io.swagger.annotations.ApiOperation
 import mu.KLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,6 +23,7 @@ class EmailUserController(
 ) {
     companion object : KLogging()
 
+    @ApiOperation(value = "Email 로그인 API", notes = "Authorization Header 필요 없습니다. Swagger 전역 설정 원인")
     @PostMapping("/login")
     fun login(@RequestBody emailLoginRequest: EmailLoginRequest): ResponseEntity<Token> {
         logger.info { "login payload : $emailLoginRequest" }
@@ -29,6 +31,7 @@ class EmailUserController(
         return ResponseEntity(tokenPublisher.publishToken(user.id!!, user.email), HttpStatus.OK)
     }
 
+    @ApiOperation(value = "Email 회원가입 API", notes = "Authorization Header 필요 없습니다. Swagger 전역 설정 원인")
     @PostMapping("/register")
     fun register(@RequestBody emailRegisterRequest: EmailRegisterRequest): ResponseEntity<Token> {
         logger.info { "register payload : $emailRegisterRequest" }
