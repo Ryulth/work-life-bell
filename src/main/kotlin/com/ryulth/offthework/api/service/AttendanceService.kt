@@ -17,10 +17,10 @@ class AttendanceService(
     companion object : KLogging() {
         val zoneId = ZoneId.of("Asia/Seoul")!!
     }
-    fun goToWork(userId: Long) {
+    fun goToWork() {
         val now = LocalDateTime.now(zoneId)
         val attendance = Attendance(
-            userId = userId,
+            userId = UserInfoThreadLocal.getUserInfo().id,
             goToWorkDate = now.toLocalDate().toString(),
             goToWorkDateTime = now.toString()
         )
@@ -30,9 +30,11 @@ class AttendanceService(
         // TODO 앙퇴근띠
     }
 
-    fun getAttendanceToday(userId: Long): Attendance {
+    fun getAttendanceToday(): Attendance {
         val now = LocalDateTime.now(zoneId)
-        val attendance = attendanceRepository.findByUserIdAndGoToWorkDate(userId, now.toLocalDate().toString())
+        val attendance = attendanceRepository.findByUserIdAndGoToWorkDate(
+            UserInfoThreadLocal.getUserInfo().id, now.toLocalDate().toString()
+        )
 
         return attendance ?: throw AttendanceNotFoundException("Today not attendance")
     }

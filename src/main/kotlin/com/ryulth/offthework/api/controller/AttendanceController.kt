@@ -16,14 +16,14 @@ class AttendanceController(
     val attendanceService: AttendanceService
 ) {
     companion object : KLogging()
+
     @PostMapping
     fun goToWork() {
-        attendanceService.goToWork(1L)
+        attendanceService.goToWork()
     }
 
     @GetMapping
     fun getTodayAttendance(): ResponseEntity<Attendance> {
-        val attendance: Attendance = attendanceService.getAttendanceToday(1L)
-        return ResponseEntity(attendance, HttpStatus.OK)
+        return ResponseEntity(attendanceService.getAttendanceToday(), HttpStatus.OK)
     }
 }

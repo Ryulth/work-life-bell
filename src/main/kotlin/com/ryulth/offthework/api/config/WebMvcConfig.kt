@@ -22,9 +22,9 @@ class WebMvcConfig(
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {
-//        registry.addInterceptor(tokenInterceptor)
-//            .addPathPatterns(includePatterns) // auth
-//            .excludePathPatterns(excludePatterns)
+        registry.addInterceptor(tokenInterceptor)
+            .addPathPatterns(includePatterns) // auth
+            .excludePathPatterns(excludePatterns)
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {

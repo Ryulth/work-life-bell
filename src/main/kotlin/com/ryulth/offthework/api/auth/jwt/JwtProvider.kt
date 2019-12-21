@@ -1,6 +1,7 @@
 package com.ryulth.offthework.api.auth.jwt
 
 import com.ryulth.offthework.api.exception.UnauthorizedException
+import com.ryulth.offthework.api.model.UserInfo
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
@@ -43,14 +44,14 @@ class JwtProvider {
             .compact()
     }
 
-    fun getUserIdAndEmailPair(authToken: String, isAccess: Boolean): Pair<Long, String> {
+    fun getUserInfo(authToken: String, isAccess: Boolean): UserInfo {
         val key = if (isAccess) accessSecretKey else refreshSecretKey
         var message = ""
         try {
             Jwts.parser().setSigningKey(generateKey(key)).parseClaimsJws(authToken)
             val claims = Jwts.parser().setSigningKey(generateKey(key))
                 .parseClaimsJws(authToken).body
-            return Pair(claims[AUTHORITIES_ID] as Long, claims[AUTHORITIES_Email].toString())
+            return UserInfo((claims[AUTHORITIES_ID] as Int).toLong(), claims[AUTHORITIES_Email].toString())
         } catch (e: SecurityException) {
             logger.error { "Invalid JWT signature. $e" }
             message = e.message!!

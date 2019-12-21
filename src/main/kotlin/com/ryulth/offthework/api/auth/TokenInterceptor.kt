@@ -2,6 +2,7 @@ package com.ryulth.offthework.api.auth
 
 import com.ryulth.offthework.api.auth.jwt.JwtProvider
 import com.ryulth.offthework.api.exception.UnauthorizedException
+import com.ryulth.offthework.api.service.UserInfoThreadLocal
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import mu.KLogging
@@ -21,8 +22,10 @@ class TokenInterceptor(
         }
         try {
             val token = request.getHeader("Authorization").split("Bearer ").toTypedArray()[1]
-            val accessEmail: String = jwtProvider.getUserIdAndEmailPair(token, true).second
-            request.session.setAttribute("accessEmail", accessEmail)
+            val userInfo = jwtProvider.getUserInfo(token, true)
+
+            // ThreadLocal 등록
+            UserInfoThreadLocal.setUserInfo(userInfo)
             return true
         } catch (e: Exception) {
             when (e) {
@@ -46,6 +49,7 @@ class TokenInterceptor(
                 }
             }
             logger.error { "Interceptor error $e" }
+            e.printStackTrace()
             return false
         }
     }

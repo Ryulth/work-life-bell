@@ -18,7 +18,7 @@ class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ExceptionHandler(AttendanceNotFoundException::class)
     fun handleAttendanceNotFoundException(e: AttendanceNotFoundException): ErrorResponse {
-        logger.error { "AttendanceNotFoundException $e" }
+        logger.error { "AttendanceNotFoundException ${e.stackTrace}" }
         val httpStatus = HttpStatus.NO_CONTENT
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }
@@ -26,7 +26,7 @@ class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UserNotFoundException::class)
     fun handleEmailInvalidException(e: UserNotFoundException): ErrorResponse {
-        logger.error { "UserNotFoundException $e" }
+        logger.error { "UserNotFoundException ${e.stackTrace}" }
         val httpStatus = HttpStatus.UNAUTHORIZED
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }
@@ -34,7 +34,7 @@ class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(EmailInvalidException::class)
     fun handleEmailInvalidException(e: EmailInvalidException): ErrorResponse {
-        logger.error { "EmailInvalidException $e" }
+        logger.error { "EmailInvalidException ${e.stackTrace}" }
         val httpStatus = HttpStatus.UNAUTHORIZED
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }
@@ -42,7 +42,7 @@ class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception::class)
     fun handleException(e: Exception): ErrorResponse {
-        logger.error { "Exception $e" }
+        logger.error { "Exception ${e.stackTrace}" }
         val httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }

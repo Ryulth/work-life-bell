@@ -17,9 +17,9 @@ class TokenPublisher(
     }
 
     fun updateToken(refreshToken: String): Token {
-        val idAndEmailPair = jwtProvider.getUserIdAndEmailPair(refreshToken, false)
-        if (userService.isUserExistById(idAndEmailPair.first)) {
-            return publishToken(idAndEmailPair.first, idAndEmailPair.second)
+        val userInfo = jwtProvider.getUserInfo(refreshToken, false)
+        if (userService.isUserExistById(userInfo.id)) {
+            return publishToken(userInfo.id, userInfo.email)
         }
         throw UnauthorizedException("User not found")
     }
