@@ -2,7 +2,6 @@ package com.ryulth.offthework.api.service
 
 import com.ryulth.offthework.api.model.Location
 import com.ryulth.offthework.api.repository.UserRepository
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,11 +14,11 @@ class UserService(
         return Location(latitude = user.workLatitude!!, longitude = user.workLongitude!!)
     }
 
-    fun isUserExistById(userId: Long): Boolean{
+    fun isUserExistById(userId: Long): Boolean {
         return userRepository.existsById(userId)
     }
 
-    fun isUserExistByEmail(userEmail: String): Boolean{
+    fun isUserExistByEmail(userEmail: String): Boolean {
         return userRepository.existsByEmail(userEmail)
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 class WebMvcConfig(
     val tokenInterceptor: TokenInterceptor
-): WebMvcConfigurer {
+) : WebMvcConfigurer {
 
     @Value("\${allowed.origin:*}")
     val origin: String = "*"

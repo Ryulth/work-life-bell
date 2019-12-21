@@ -1,16 +1,12 @@
 package com.ryulth.offthework.api.service
 
+import com.ryulth.offthework.api.exception.AttendanceNotFoundException
 import com.ryulth.offthework.api.model.Attendance
 import com.ryulth.offthework.api.repository.AttendanceRepository
-import com.ryulth.offthework.api.util.AttendanceNotFoundException
+import java.time.LocalDateTime
+import java.time.ZoneId
 import mu.KLogging
 import org.springframework.stereotype.Service
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 
 @Service
 class AttendanceService(
@@ -18,7 +14,7 @@ class AttendanceService(
     val locationService: LocationService,
     val userService: UserService
 ) {
-    companion object: KLogging() {
+    companion object : KLogging() {
         val zoneId = ZoneId.of("Asia/Seoul")!!
     }
     fun goToWork(userId: Long) {

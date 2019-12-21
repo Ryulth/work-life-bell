@@ -1,18 +1,19 @@
 package com.ryulth.offthework.api.auth
 
 import com.ryulth.offthework.api.auth.jwt.JwtProvider
+import com.ryulth.offthework.api.exception.UnauthorizedException
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import mu.KLogging
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Component
 class TokenInterceptor(
     val jwtProvider: JwtProvider
-): HandlerInterceptor {
+) : HandlerInterceptor {
 
-    companion object: KLogging()
+    companion object : KLogging()
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any?): Boolean {
         if (request.method == "OPTIONS") {
@@ -24,7 +25,7 @@ class TokenInterceptor(
             request.session.setAttribute("accessEmail", accessEmail)
             return true
         } catch (e: Exception) {
-            when(e) {
+            when (e) {
                 is ArrayIndexOutOfBoundsException -> {
                     response.sendError(
                         401, "{ \"error\" : \"Authorization Format Invalid," +

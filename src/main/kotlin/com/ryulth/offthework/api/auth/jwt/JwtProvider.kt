@@ -1,21 +1,21 @@
 package com.ryulth.offthework.api.auth.jwt
 
-import com.ryulth.offthework.api.auth.UnauthorizedException
+import com.ryulth.offthework.api.exception.UnauthorizedException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.UnsupportedJwtException
+import java.io.UnsupportedEncodingException
+import java.util.Date
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.io.UnsupportedEncodingException
-import java.util.Date
 
 @Service
 class JwtProvider {
-    companion object: KLogging()
+    companion object : KLogging()
 
     @Value("\${jwt.secret.base64.access}")
     val accessSecretKey: String? = null
@@ -50,8 +50,8 @@ class JwtProvider {
             Jwts.parser().setSigningKey(generateKey(key)).parseClaimsJws(authToken)
             val claims = Jwts.parser().setSigningKey(generateKey(key))
                 .parseClaimsJws(authToken).body
-            return Pair(claims[AUTHORITIES_ID] as Long,claims[AUTHORITIES_Email].toString())
-        } catch (e: SecurityException ) {
+            return Pair(claims[AUTHORITIES_ID] as Long, claims[AUTHORITIES_Email].toString())
+        } catch (e: SecurityException) {
             logger.error { "Invalid JWT signature. $e" }
             message = e.message!!
         } catch (e: MalformedJwtException) {
@@ -82,5 +82,4 @@ class JwtProvider {
         }
         return key
     }
-
 }

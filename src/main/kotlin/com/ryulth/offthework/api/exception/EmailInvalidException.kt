@@ -1,4 +1,3 @@
-package com.ryulth.offthework.api.util
+package com.ryulth.offthework.api.exception
 
 class EmailInvalidException(message: String) : Exception(message)
-
