@@ -21,6 +21,6 @@ data class Attendance(
 )
 
 data class AttendanceIdClass(
-    val userId: Long ? = null,
-    val goToWorkDate: String ? = null
+    val userId: Long,
+    val goToWorkDate: String
 ) : Serializable

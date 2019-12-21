@@ -20,13 +20,13 @@ class AttendanceController(
 
     @ApiOperation("오늘 날자로 출근 찍기")
     @PostMapping
-    fun goToWork() {
-        attendanceService.goToWork()
+    fun goToWork(): Attendance {
+        return attendanceService.goToWork()
     }
 
     @ApiOperation("오늘 날짜의 출근 기록")
     @GetMapping
-    fun getTodayAttendance(): ResponseEntity<Attendance> {
-        return ResponseEntity(attendanceService.getAttendanceToday(), HttpStatus.OK)
+    fun getTodayAttendance(): Attendance {
+        return attendanceService.getAttendanceToday()
     }
 }
