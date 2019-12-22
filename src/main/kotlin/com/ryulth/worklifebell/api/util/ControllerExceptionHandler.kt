@@ -1,6 +1,7 @@
 package com.ryulth.worklifebell.api.util
 
-import com.ryulth.worklifebell.api.exception.AlreadyAttendanceException
+import com.ryulth.worklifebell.api.exception.AlreadyOffWorkException
+import com.ryulth.worklifebell.api.exception.AlreadyOnWorkException
 import com.ryulth.worklifebell.api.exception.AttendanceNotFoundException
 import com.ryulth.worklifebell.api.exception.EmailInvalidException
 import com.ryulth.worklifebell.api.exception.UserNotFoundException
@@ -16,12 +17,12 @@ class ControllerExceptionHandler {
 
     companion object : KLogging()
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AttendanceNotFoundException::class)
     fun handleAttendanceNotFoundException(e: AttendanceNotFoundException): ErrorResponse {
-        logger.error { "AttendanceNotFoundException ${e.stackTrace}" }
+        logger.error { "AttendanceNotFoundException $e" }
         e.printStackTrace()
-        val httpStatus = HttpStatus.NO_CONTENT
+        val httpStatus = HttpStatus.BAD_REQUEST
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }
 
@@ -44,9 +45,18 @@ class ControllerExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(AlreadyAttendanceException::class)
-    fun handleAlreadyAttendanceException(e: AlreadyAttendanceException): ErrorResponse {
+    @ExceptionHandler(AlreadyOnWorkException::class)
+    fun handleAlreadyAttendanceException(e: AlreadyOnWorkException): ErrorResponse {
         logger.error { "AlreadyAttendanceException $e" }
+        e.printStackTrace()
+        val httpStatus = HttpStatus.CONFLICT
+        return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(AlreadyOffWorkException::class)
+    fun handleAlreadyOffWorkException(e: AlreadyOffWorkException): ErrorResponse {
+        logger.error { "AlreadyOffWorkException $e" }
         e.printStackTrace()
         val httpStatus = HttpStatus.CONFLICT
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())

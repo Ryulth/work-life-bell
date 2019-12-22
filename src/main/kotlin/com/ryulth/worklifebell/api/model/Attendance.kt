@@ -15,12 +15,12 @@ import javax.persistence.Table
 @IdClass(AttendanceIdClass::class)
 data class Attendance(
     @Id val userId: Long,
-    @Id @Column(length = 64) val goToWorkDate: String,
-    @Column(length = 64) val goToWorkDateTime: String,
-    @Column(length = 64) val getOffWorkDateTime: String ? = null
+    @Id @Column(length = 64) val onWorkDate: String,
+    @Column(length = 64) val onWorkDateTime: String,
+    @Column(length = 64) var offWorkDateTime: String ? = null
 )
 
 data class AttendanceIdClass(
-    val userId: Long,
-    val goToWorkDate: String
+    var userId: Long= 0L,
+    var onWorkDate: String= ""
 ) : Serializable

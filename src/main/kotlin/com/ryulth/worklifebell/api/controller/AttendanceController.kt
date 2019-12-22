@@ -18,15 +18,21 @@ class AttendanceController(
 ) {
     companion object : KLogging()
 
-    @ApiOperation("오늘 날자로 출근 찍기")
-    @PostMapping
-    fun goToWork(): Attendance {
-        return attendanceService.goToWork()
-    }
-
     @ApiOperation("오늘 날짜의 출근 기록")
     @GetMapping
     fun getTodayAttendance(): Attendance {
         return attendanceService.getAttendanceToday()
+    }
+
+    @ApiOperation("오늘 날자로 출근 찍기")
+    @PostMapping("/onwork")
+    fun onWork(): Attendance {
+        return attendanceService.onWork()
+    }
+
+    @ApiOperation("오늘 날자로 퇴근 찍기")
+    @PostMapping("/offwork")
+    fun offWork(): Attendance {
+        return attendanceService.offWork()
     }
 }

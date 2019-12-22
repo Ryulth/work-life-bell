@@ -11,9 +11,9 @@ interface AttendanceRepository : JpaRepository<Attendance, AttendanceIdClass> {
     @Transactional
     @Modifying
     @Query(
-        value = " INSERT INTO attendance (user_id, go_to_work_date, go_to_work_date_time) VALUES (?1, ?2, ?3)",
+        value = " INSERT INTO attendance (user_id, on_work_date, on_work_date_time) VALUES (?1, ?2, ?3)",
         nativeQuery = true
     )
-    fun insert(userId: Long, goToWorkDate: String, gotoWorkDateTime: String)
-    fun findByUserIdAndGoToWorkDate(userId: Long, goToWorkDate: String): Attendance?
+    fun insert(userId: Long, onWorkDate: String, onWorkDateTime: String)
+    fun findByUserIdAndOnWorkDate(userId: Long, onWorkDate: String): Attendance?
 }
