@@ -15,7 +15,7 @@ buildscript {
     }
 }
 
-group 'com.ryulth.offthework.api'
+group 'com.ryulth.worklifebell.api'
 version '0.0.1-SNAPSHOT'
 
 
