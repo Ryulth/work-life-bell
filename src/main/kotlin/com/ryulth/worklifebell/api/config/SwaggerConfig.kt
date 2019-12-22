@@ -20,6 +20,7 @@ class SwaggerConfig {
     @Bean
     fun api(): Docket =
         Docket(DocumentationType.SWAGGER_2)
+            .host("api.worklifebell.ryulth.com")
             .globalOperationParameters(this.globalParameters())
             .select()
             .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation::class.java))
