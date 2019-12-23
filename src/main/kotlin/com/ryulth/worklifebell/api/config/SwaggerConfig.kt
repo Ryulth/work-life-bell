@@ -30,8 +30,8 @@ class SwaggerConfig {
 
     private fun apiInfo() =
         ApiInfoBuilder()
-            .title("Off The Work API")
-            .description("Off The Work API 입니다")
+            .title("Work Life Bell API")
+            .description("Work Life Bell API 입니다")
             .build()
 
     private fun globalParameters() =

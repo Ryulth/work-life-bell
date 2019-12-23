@@ -1,20 +1,19 @@
-package com.ryulth.worklifebell.api.service
+package com.ryulth.worklifebell.api.util
 
 import com.ryulth.worklifebell.api.model.UserInfo
 
 class UserInfoThreadLocal {
     companion object {
-        private val threadLocal: ThreadLocal<UserInfo> = object : ThreadLocal<UserInfo>() {}
+        private val userInfoThreadLocal = ThreadLocal<UserInfo>()
 
         fun setUserInfo(userInfo: UserInfo) {
-            threadLocal.set(userInfo)
+            userInfoThreadLocal.set(userInfo)
         }
         fun getUserInfo(): UserInfo {
-            return threadLocal.get()
+            return userInfoThreadLocal.get()
         }
-
         fun remove() {
-            threadLocal.remove()
+            userInfoThreadLocal.remove()
         }
     }
 }

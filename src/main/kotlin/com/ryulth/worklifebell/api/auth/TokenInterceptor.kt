@@ -2,7 +2,7 @@ package com.ryulth.worklifebell.api.auth
 
 import com.ryulth.worklifebell.api.auth.jwt.JwtProvider
 import com.ryulth.worklifebell.api.exception.UnauthorizedException
-import com.ryulth.worklifebell.api.service.UserInfoThreadLocal
+import com.ryulth.worklifebell.api.util.UserInfoThreadLocal
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import mu.KLogging
