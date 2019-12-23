@@ -16,7 +16,7 @@ import javax.persistence.Table
 data class Attendance(
     @Id val userId: Long,
     @Id @Column(length = 64) val onWorkDate: String,
-    @Column(length = 64) val onWorkDateTime: String,
+    @Column(length = 64) var onWorkDateTime: String,
     @Column(length = 64) var offWorkDateTime: String ? = null
 )
 
