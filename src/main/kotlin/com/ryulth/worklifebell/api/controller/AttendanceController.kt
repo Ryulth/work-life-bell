@@ -27,18 +27,18 @@ class AttendanceController(
         return attendanceService.getAttendanceToday()
     }
 
-    @ApiOperation("오늘 날자로 출근 찍기")
+    @ApiOperation("오늘 날짜로 출근 찍기")
     @PostMapping("/onwork")
     fun onWork(): Attendance {
         return attendanceService.onWork()
     }
 
-    @ApiOperation("오늘 날자로 출근 시간 조정")
+    @ApiOperation("오늘 날짜로 출근 시간 조정")
     @PutMapping("/onwork")
     fun fixOnWorkTime(@RequestBody onWorkTimeRequest: OnWorkTimeRequest): Attendance {
         return attendanceService.fixOnWorkTime(onWorkTimeRequest)
     }
-    @ApiOperation("오늘 날자로 퇴근 찍기")
+    @ApiOperation("오늘 날짜로 퇴근 찍기")
     @PostMapping("/offwork")
     fun offWork(): Attendance {
         return attendanceService.offWork()
