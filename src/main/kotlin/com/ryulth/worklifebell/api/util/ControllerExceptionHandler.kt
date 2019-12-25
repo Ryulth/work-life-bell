@@ -3,6 +3,7 @@ package com.ryulth.worklifebell.api.util
 import com.ryulth.worklifebell.api.exception.AlreadyOffWorkException
 import com.ryulth.worklifebell.api.exception.AlreadyOnWorkException
 import com.ryulth.worklifebell.api.exception.AttendanceNotFoundException
+import com.ryulth.worklifebell.api.exception.DateFormatException
 import com.ryulth.worklifebell.api.exception.EmailInvalidException
 import com.ryulth.worklifebell.api.exception.UserNotFoundException
 import com.ryulth.worklifebell.api.model.response.ErrorResponse
@@ -21,6 +22,15 @@ class ControllerExceptionHandler {
     @ExceptionHandler(AttendanceNotFoundException::class)
     fun handleAttendanceNotFoundException(e: AttendanceNotFoundException): ErrorResponse {
         logger.error { "AttendanceNotFoundException $e" }
+        e.printStackTrace()
+        val httpStatus = HttpStatus.BAD_REQUEST
+        return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DateFormatException::class)
+    fun handleDateFormatException(e: DateFormatException): ErrorResponse {
+        logger.error { "DateFormatException $e" }
         e.printStackTrace()
         val httpStatus = HttpStatus.BAD_REQUEST
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())

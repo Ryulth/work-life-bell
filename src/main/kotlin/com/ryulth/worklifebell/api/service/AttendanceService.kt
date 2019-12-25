@@ -7,6 +7,7 @@ import com.ryulth.worklifebell.api.model.Attendance
 import com.ryulth.worklifebell.api.model.AttendanceIdClass
 import com.ryulth.worklifebell.api.model.request.OnWorkTimeRequest
 import com.ryulth.worklifebell.api.repository.AttendanceRepository
+import com.ryulth.worklifebell.api.util.DateFormatUtils
 import com.ryulth.worklifebell.api.util.UserInfoThreadLocal
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -46,6 +47,8 @@ class AttendanceService(
         }
     }
     fun fixOnWorkTime(onWorkTimeRequest: OnWorkTimeRequest): Attendance {
+        DateFormatUtils.validateDateTime(onWorkTimeRequest.onWorkTime)
+
         val now = LocalDateTime.now(zoneId)
         val attendanceIdClass = AttendanceIdClass(
             UserInfoThreadLocal.getUserInfo().id,
@@ -55,7 +58,6 @@ class AttendanceService(
         val attendance = attendanceRepository.findByIdOrNull(attendanceIdClass)
             ?: throw AttendanceNotFoundException("Today not attendance")
 
-        //TODO onWorkDateTime fomatter
         attendance.onWorkDateTime = onWorkTimeRequest.onWorkTime
 
         return attendance
