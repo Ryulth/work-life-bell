@@ -17,14 +17,14 @@ class WebMvcConfig(
     val origin: String = "*"
 
     companion object {
-        val includePatterns = listOf("/api/**")
-        val excludePatterns = listOf("/api/auth/**")
+        val INCLUDE_PATTERNS = listOf("/api/**")
+        val EXCLUDE_PATTERNS = listOf("/api/auth/**")
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(tokenInterceptor)
-            .addPathPatterns(includePatterns) // auth
-            .excludePathPatterns(excludePatterns)
+            .addPathPatterns(INCLUDE_PATTERNS) // auth
+            .excludePathPatterns(EXCLUDE_PATTERNS)
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {
