@@ -36,7 +36,7 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(http: HttpSecurity) {
-        http.authorizeRequests().antMatchers(*AUTH_LIST).authenticated().and().httpBasic()
+        http.authorizeRequests().antMatchers(*AUTH_LIST).authenticated().and().csrf().disable()
     }
 
     @Bean
