@@ -18,7 +18,7 @@ class WebMvcConfig(
 
     companion object {
         val INCLUDE_PATTERNS = listOf("/api/**")
-        val EXCLUDE_PATTERNS = listOf("/api/auth/**")
+        val EXCLUDE_PATTERNS = listOf("/auth/**")
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {

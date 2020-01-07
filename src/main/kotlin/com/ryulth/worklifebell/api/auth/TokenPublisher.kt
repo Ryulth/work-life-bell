@@ -16,7 +16,7 @@ class TokenPublisher(
         return Token(accessToken = accessToken, refreshToken = refreshToken)
     }
 
-    fun updateToken(refreshToken: String): Token {
+    fun refreshToken(refreshToken: String): Token {
         val userInfo = jwtProvider.getUserInfo(refreshToken, false)
         if (userService.isUserExistById(userInfo.id)) {
             return publishToken(userInfo.id, userInfo.email)

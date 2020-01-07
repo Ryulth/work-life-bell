@@ -10,32 +10,36 @@ import io.swagger.annotations.ApiOperation
 import mu.KLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/auth/email")
-class EmailUserController(
+@RequestMapping("/auth")
+class AccountController(
     val emailUserService: EmailUserService,
     val tokenPublisher: TokenPublisher
 ) {
     companion object : KLogging()
 
     @ApiOperation(value = "Email 로그인 API", notes = "Authorization Header 필요 없습니다. Swagger 전역 설정 원인")
-    @PostMapping("/login")
-    fun login(@RequestBody emailLoginRequest: EmailLoginRequest): ResponseEntity<Token> {
+    @PostMapping("/login/email")
+    fun loginWithEmail(@RequestBody emailLoginRequest: EmailLoginRequest): ResponseEntity<Token> {
         logger.info { "login payload : $emailLoginRequest" }
         val user: User = emailUserService.loginByEmail(emailLoginRequest)
         return ResponseEntity(tokenPublisher.publishToken(user.id!!, user.email), HttpStatus.OK)
     }
 
     @ApiOperation(value = "Email 회원가입 API", notes = "Authorization Header 필요 없습니다. Swagger 전역 설정 원인")
-    @PostMapping("/register")
-    fun register(@RequestBody emailRegisterRequest: EmailRegisterRequest): ResponseEntity<Token> {
+    @PostMapping("/register/email")
+    fun registerWithEmail(@RequestBody emailRegisterRequest: EmailRegisterRequest): ResponseEntity<Token> {
         logger.info { "register payload : $emailRegisterRequest" }
         val user: User = emailUserService.registerByEmail(emailRegisterRequest)
         return ResponseEntity(tokenPublisher.publishToken(user.id!!, user.email), HttpStatus.OK)
+    }
+
+    @ApiOperation(value = "Update Access Token API", notes = "refresh_token 을 보내면 access_token 을 반환해주는 API. (Authorization Header 필요 없습니다. Swagger 전역 설정 원인)")
+    @PostMapping("/refresh/{token:.+}")
+    fun refreshToken(@PathVariable("token") refreshToken: String?): Token? {
+        return refreshToken?.let { tokenPublisher.refreshToken(it) }
     }
 }

@@ -36,39 +36,39 @@ class ControllerExceptionHandler {
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserNotFoundException::class)
     fun handleEmailInvalidException(e: UserNotFoundException): ErrorResponse {
         logger.error { "UserNotFoundException $e" }
         e.printStackTrace()
-        val httpStatus = HttpStatus.UNAUTHORIZED
+        val httpStatus = HttpStatus.BAD_REQUEST
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EmailInvalidException::class)
     fun handleEmailInvalidException(e: EmailInvalidException): ErrorResponse {
         logger.error { "EmailInvalidException $e" }
         e.printStackTrace()
-        val httpStatus = HttpStatus.UNAUTHORIZED
+        val httpStatus = HttpStatus.BAD_REQUEST
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AlreadyOnWorkException::class)
     fun handleAlreadyAttendanceException(e: AlreadyOnWorkException): ErrorResponse {
         logger.error { "AlreadyAttendanceException $e" }
         e.printStackTrace()
-        val httpStatus = HttpStatus.CONFLICT
+        val httpStatus = HttpStatus.BAD_REQUEST
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AlreadyOffWorkException::class)
     fun handleAlreadyOffWorkException(e: AlreadyOffWorkException): ErrorResponse {
         logger.error { "AlreadyOffWorkException $e" }
         e.printStackTrace()
-        val httpStatus = HttpStatus.CONFLICT
+        val httpStatus = HttpStatus.BAD_REQUEST
         return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
     }
 
