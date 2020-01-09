@@ -1,12 +1,11 @@
 package com.ryulth.worklifebell.api.controller
 
+import com.ryulth.worklifebell.api.dto.AttendanceResponse
 import com.ryulth.worklifebell.api.model.Attendance
-import com.ryulth.worklifebell.api.model.request.OnWorkTimeRequest
+import com.ryulth.worklifebell.api.dto.OnWorkTimeRequest
 import com.ryulth.worklifebell.api.service.AttendanceService
 import io.swagger.annotations.ApiOperation
 import mu.KLogging
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -23,24 +22,24 @@ class AttendanceController(
 
     @ApiOperation("오늘 날짜의 출근 기록")
     @GetMapping
-    fun getTodayAttendance(): Attendance {
+    fun getTodayAttendance(): AttendanceResponse {
         return attendanceService.getAttendanceToday()
     }
 
     @ApiOperation("오늘 날짜로 출근 찍기")
     @PostMapping("/onwork")
-    fun onWork(): Attendance {
+    fun onWork(): AttendanceResponse {
         return attendanceService.onWork()
     }
 
     @ApiOperation("오늘 날짜로 출근 시간 조정")
     @PutMapping("/onwork")
-    fun fixOnWorkTime(@RequestBody onWorkTimeRequest: OnWorkTimeRequest): Attendance {
+    fun fixOnWorkTime(@RequestBody onWorkTimeRequest: OnWorkTimeRequest): AttendanceResponse {
         return attendanceService.fixOnWorkTime(onWorkTimeRequest)
     }
     @ApiOperation("오늘 날짜로 퇴근 찍기")
     @PostMapping("/offwork")
-    fun offWork(): Attendance {
+    fun offWork(): AttendanceResponse {
         return attendanceService.offWork()
     }
 }

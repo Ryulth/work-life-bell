@@ -1,22 +1,22 @@
 package com.ryulth.worklifebell.api.service
 
+import com.ryulth.worklifebell.api.dto.AttendanceResponse
+import com.ryulth.worklifebell.api.dto.OnWorkTimeRequest
 import com.ryulth.worklifebell.api.exception.AlreadyOffWorkException
 import com.ryulth.worklifebell.api.exception.AlreadyOnWorkException
 import com.ryulth.worklifebell.api.exception.AttendanceNotFoundException
-import com.ryulth.worklifebell.api.model.Attendance
 import com.ryulth.worklifebell.api.model.AttendanceIdClass
-import com.ryulth.worklifebell.api.model.request.OnWorkTimeRequest
 import com.ryulth.worklifebell.api.repository.AttendanceRepository
-import com.ryulth.worklifebell.api.util.DateFormatUtils
 import com.ryulth.worklifebell.api.util.UserInfoThreadLocal
-import java.time.LocalDateTime
-import java.time.ZoneId
 import mu.KLogging
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.SQLIntegrityConstraintViolationException
+import java.time.LocalDateTime
+import java.time.ZoneId
+
 
 @Service
 class AttendanceService(
@@ -27,32 +27,37 @@ class AttendanceService(
     companion object : KLogging() {
         val zoneId = ZoneId.of("Asia/Seoul")!!
     }
-    fun onWork(): Attendance {
+    fun onWork(): AttendanceResponse {
         val now = LocalDateTime.now(zoneId)
         val attendanceIdClass = AttendanceIdClass(
             UserInfoThreadLocal.getUserInfo().id,
-            now.toLocalDate().toString()
+            now.toLocalDate()
         )
         try {
-            attendanceRepository.insert(attendanceIdClass.userId, attendanceIdClass.onWorkDate, now.toString())
-            return attendanceRepository.getOne(attendanceIdClass)
+            attendanceRepository.insert(attendanceIdClass.userId, now.toLocalDate(), now)
+            val attendance = attendanceRepository.getOne(attendanceIdClass)
+            return AttendanceResponse(
+                onWorkDate = now.toLocalDate() ,
+                onWorkDateTime = attendance?.onWorkDateTime,
+                offWorkDateTime = attendance?.offWorkDateTime,
+                weeklyWorkTime = calcWeeklyWorkTime(),
+                monthlyWorkTime = calcMonthlyWorkTime()
+            )
         } catch (e: Exception){
             when(e) {
                 is DataIntegrityViolationException,
                 is ConstraintViolationException,
                 is SQLIntegrityConstraintViolationException ->
-                    throw AlreadyOnWorkException("Today already on work")
+                    throw AlreadyOnWorkException("Today already on work $e")
                 else -> throw e
             }
         }
     }
-    fun fixOnWorkTime(onWorkTimeRequest: OnWorkTimeRequest): Attendance {
-        DateFormatUtils.validateDateTime(onWorkTimeRequest.onWorkTime)
-
+    fun fixOnWorkTime(onWorkTimeRequest: OnWorkTimeRequest): AttendanceResponse {
         val now = LocalDateTime.now(zoneId)
         val attendanceIdClass = AttendanceIdClass(
             UserInfoThreadLocal.getUserInfo().id,
-            now.toLocalDate().toString()
+            now.toLocalDate()
         )
 
         val attendance = attendanceRepository.findByIdOrNull(attendanceIdClass)
@@ -60,13 +65,19 @@ class AttendanceService(
 
         attendance.onWorkDateTime = onWorkTimeRequest.onWorkTime
 
-        return attendance
+        return AttendanceResponse(
+            onWorkDate = now.toLocalDate() ,
+            onWorkDateTime = attendance?.onWorkDateTime,
+            offWorkDateTime = attendance?.offWorkDateTime,
+            weeklyWorkTime = calcWeeklyWorkTime(),
+            monthlyWorkTime = calcMonthlyWorkTime()
+        )
     }
-    fun offWork(): Attendance {
+    fun offWork(): AttendanceResponse {
         val now = LocalDateTime.now(zoneId)
         val attendanceIdClass = AttendanceIdClass(
             UserInfoThreadLocal.getUserInfo().id,
-            now.toLocalDate().toString()
+            now.toLocalDate()
         )
         val attendance = attendanceRepository.findByIdOrNull(attendanceIdClass)
             ?: throw AttendanceNotFoundException("Today not attendance")
@@ -74,19 +85,33 @@ class AttendanceService(
         attendance.offWorkDateTime?.let {
             throw AlreadyOffWorkException("Today already off work")
         } ?: run {
-            attendance.offWorkDateTime = now.toString()
+            attendance.offWorkDateTime = now
             attendanceRepository.save(attendance)
         }
 
-        return attendance
+        return AttendanceResponse(
+            onWorkDate = now.toLocalDate() ,
+            onWorkDateTime = attendance?.onWorkDateTime,
+            offWorkDateTime = attendance?.offWorkDateTime,
+            weeklyWorkTime = calcWeeklyWorkTime(),
+            monthlyWorkTime = calcMonthlyWorkTime()
+        )
     }
 
-    fun getAttendanceToday(): Attendance {
+    fun getAttendanceToday(): AttendanceResponse {
         val now = LocalDateTime.now(zoneId)
         val attendance = attendanceRepository.findByUserIdAndOnWorkDate(
-            UserInfoThreadLocal.getUserInfo().id, now.toLocalDate().toString()
+            UserInfoThreadLocal.getUserInfo().id, now.toLocalDate()
         )
-
-        return attendance ?: throw AttendanceNotFoundException("Today not attendance")
+        return AttendanceResponse(
+            onWorkDate = now.toLocalDate() ,
+            onWorkDateTime = attendance?.onWorkDateTime,
+            offWorkDateTime = attendance?.offWorkDateTime,
+            weeklyWorkTime = calcWeeklyWorkTime(),
+            monthlyWorkTime = calcMonthlyWorkTime()
+        )
     }
+
+    fun calcWeeklyWorkTime() = null
+    fun calcMonthlyWorkTime() = null
 }

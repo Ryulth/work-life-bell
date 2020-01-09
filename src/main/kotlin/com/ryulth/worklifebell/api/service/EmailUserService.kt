@@ -4,8 +4,8 @@ import com.ryulth.worklifebell.api.exception.EmailInvalidException
 import com.ryulth.worklifebell.api.exception.UserNotFoundException
 import com.ryulth.worklifebell.api.model.LoginType
 import com.ryulth.worklifebell.api.model.User
-import com.ryulth.worklifebell.api.model.request.EmailLoginRequest
-import com.ryulth.worklifebell.api.model.request.EmailRegisterRequest
+import com.ryulth.worklifebell.api.dto.EmailLoginRequest
+import com.ryulth.worklifebell.api.dto.EmailRegisterRequest
 import com.ryulth.worklifebell.api.repository.UserRepository
 import java.util.regex.Pattern
 import mu.KLogging

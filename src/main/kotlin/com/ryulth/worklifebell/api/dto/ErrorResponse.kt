@@ -1,4 +1,4 @@
-package com.ryulth.worklifebell.api.model.response
+package com.ryulth.worklifebell.api.dto
 
 data class ErrorResponse(
     val error: String,

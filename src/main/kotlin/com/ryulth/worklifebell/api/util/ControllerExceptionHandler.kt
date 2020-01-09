@@ -6,12 +6,13 @@ import com.ryulth.worklifebell.api.exception.AttendanceNotFoundException
 import com.ryulth.worklifebell.api.exception.DateFormatException
 import com.ryulth.worklifebell.api.exception.EmailInvalidException
 import com.ryulth.worklifebell.api.exception.UserNotFoundException
-import com.ryulth.worklifebell.api.model.response.ErrorResponse
+import com.ryulth.worklifebell.api.dto.ErrorResponse
 import mu.KLogging
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import java.time.format.DateTimeParseException
 
 @RestControllerAdvice
 class ControllerExceptionHandler {
@@ -24,7 +25,11 @@ class ControllerExceptionHandler {
         logger.error { "AttendanceNotFoundException $e" }
         e.printStackTrace()
         val httpStatus = HttpStatus.BAD_REQUEST
-        return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
+        return ErrorResponse(
+            httpStatus.reasonPhrase,
+            httpStatus.value(),
+            e.toString()
+        )
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -33,7 +38,11 @@ class ControllerExceptionHandler {
         logger.error { "DateFormatException $e" }
         e.printStackTrace()
         val httpStatus = HttpStatus.BAD_REQUEST
-        return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
+        return ErrorResponse(
+            httpStatus.reasonPhrase,
+            httpStatus.value(),
+            e.toString()
+        )
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -42,7 +51,11 @@ class ControllerExceptionHandler {
         logger.error { "UserNotFoundException $e" }
         e.printStackTrace()
         val httpStatus = HttpStatus.BAD_REQUEST
-        return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
+        return ErrorResponse(
+            httpStatus.reasonPhrase,
+            httpStatus.value(),
+            e.toString()
+        )
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -51,7 +64,11 @@ class ControllerExceptionHandler {
         logger.error { "EmailInvalidException $e" }
         e.printStackTrace()
         val httpStatus = HttpStatus.BAD_REQUEST
-        return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
+        return ErrorResponse(
+            httpStatus.reasonPhrase,
+            httpStatus.value(),
+            e.toString()
+        )
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -60,7 +77,11 @@ class ControllerExceptionHandler {
         logger.error { "AlreadyAttendanceException $e" }
         e.printStackTrace()
         val httpStatus = HttpStatus.BAD_REQUEST
-        return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
+        return ErrorResponse(
+            httpStatus.reasonPhrase,
+            httpStatus.value(),
+            e.toString()
+        )
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -69,7 +90,24 @@ class ControllerExceptionHandler {
         logger.error { "AlreadyOffWorkException $e" }
         e.printStackTrace()
         val httpStatus = HttpStatus.BAD_REQUEST
-        return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
+        return ErrorResponse(
+            httpStatus.reasonPhrase,
+            httpStatus.value(),
+            e.toString()
+        )
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DateTimeParseException::class)
+    fun handleDateTimeParseException(e: DateTimeParseException): ErrorResponse {
+        logger.error { "DateTimeParseException $e" }
+        e.printStackTrace()
+        val httpStatus = HttpStatus.BAD_REQUEST
+        return ErrorResponse(
+            httpStatus.reasonPhrase,
+            httpStatus.value(),
+            e.toString()
+        )
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -78,6 +116,10 @@ class ControllerExceptionHandler {
         logger.error { "Exception $e" }
         e.printStackTrace()
         val httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
-        return ErrorResponse(httpStatus.reasonPhrase, httpStatus.value(), e.toString())
+        return ErrorResponse(
+            httpStatus.reasonPhrase,
+            httpStatus.value(),
+            e.toString()
+        )
     }
 }

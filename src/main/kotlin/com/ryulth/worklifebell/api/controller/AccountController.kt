@@ -3,14 +3,13 @@ package com.ryulth.worklifebell.api.controller
 import com.ryulth.worklifebell.api.auth.Token
 import com.ryulth.worklifebell.api.auth.TokenPublisher
 import com.ryulth.worklifebell.api.model.User
-import com.ryulth.worklifebell.api.model.request.EmailLoginRequest
-import com.ryulth.worklifebell.api.model.request.EmailRegisterRequest
+import com.ryulth.worklifebell.api.dto.EmailLoginRequest
+import com.ryulth.worklifebell.api.dto.EmailRegisterRequest
 import com.ryulth.worklifebell.api.service.EmailUserService
 import io.swagger.annotations.ApiOperation
 import mu.KLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.annotation.*
 
 @RestController
