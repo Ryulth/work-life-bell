@@ -28,7 +28,7 @@ class AttendanceService(
         val zoneId = ZoneId.of("Asia/Seoul")!!
     }
     fun onWork(): AttendanceResponse {
-        val now = LocalDateTime.now(zoneId)
+        val now = LocalDateTime.now(zoneId).withNano(0)
         val attendanceIdClass = AttendanceIdClass(
             UserInfoThreadLocal.getUserInfo().id,
             now.toLocalDate()
@@ -54,7 +54,7 @@ class AttendanceService(
         }
     }
     fun fixOnWorkTime(onWorkTimeRequest: OnWorkTimeRequest): AttendanceResponse {
-        val now = LocalDateTime.now(zoneId)
+        val now = LocalDateTime.now(zoneId).withNano(0)
         val attendanceIdClass = AttendanceIdClass(
             UserInfoThreadLocal.getUserInfo().id,
             now.toLocalDate()
@@ -74,7 +74,7 @@ class AttendanceService(
         )
     }
     fun offWork(): AttendanceResponse {
-        val now = LocalDateTime.now(zoneId)
+        val now = LocalDateTime.now(zoneId).withNano(0)
         val attendanceIdClass = AttendanceIdClass(
             UserInfoThreadLocal.getUserInfo().id,
             now.toLocalDate()
@@ -99,7 +99,7 @@ class AttendanceService(
     }
 
     fun getAttendanceToday(): AttendanceResponse {
-        val now = LocalDateTime.now(zoneId)
+        val now = LocalDateTime.now(zoneId).withNano(0)
         val attendance = attendanceRepository.findByUserIdAndOnWorkDate(
             UserInfoThreadLocal.getUserInfo().id, now.toLocalDate()
         )
