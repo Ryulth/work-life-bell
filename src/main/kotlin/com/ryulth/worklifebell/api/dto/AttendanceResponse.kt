@@ -11,6 +11,7 @@ data class AttendanceResponse (
     val onWorkDateTime: LocalDateTime ? = null,
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val offWorkDateTime: LocalDateTime ? = null,
+    // LocalTime 은 24 이상 지원하지 않음
     val weeklyWorkTime: String ? = null,
     val monthlyWorkTime: String ? = null
 )

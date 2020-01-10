@@ -19,4 +19,5 @@ interface AttendanceRepository : JpaRepository<Attendance, AttendanceIdClass> {
     )
     fun insert(userId: Long, onWorkDate: LocalDate, onWorkDateTime: LocalDateTime)
     fun findByUserIdAndOnWorkDate(userId: Long, onWorkDate: LocalDate): Attendance?
+    fun findByUserIdAndOnWorkDateBetween(userId: Long, start: LocalDate, end: LocalDate): List<Attendance>
 }

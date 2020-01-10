@@ -1,7 +1,7 @@
 package com.ryulth.worklifebell.api.auth.jwt
 
 import com.ryulth.worklifebell.api.exception.UnauthorizedException
-import com.ryulth.worklifebell.api.model.UserInfo
+import com.ryulth.worklifebell.api.model.UserSession
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
@@ -44,14 +44,14 @@ class JwtProvider {
             .compact()
     }
 
-    fun getUserInfo(authToken: String, isAccess: Boolean): UserInfo {
+    fun getUserSession(authToken: String, isAccess: Boolean): UserSession {
         val key = if (isAccess) accessSecretKey else refreshSecretKey
         var message = ""
         try {
             Jwts.parser().setSigningKey(generateKey(key)).parseClaimsJws(authToken)
             val claims = Jwts.parser().setSigningKey(generateKey(key))
                 .parseClaimsJws(authToken).body
-            return UserInfo((claims[AUTHORITIES_ID] as Int).toLong(), claims[AUTHORITIES_Email].toString())
+            return UserSession((claims[AUTHORITIES_ID] as Int).toLong(), claims[AUTHORITIES_Email].toString())
         } catch (e: SecurityException) {
             logger.error { "Invalid JWT signature. $e" }
             message = e.message!!

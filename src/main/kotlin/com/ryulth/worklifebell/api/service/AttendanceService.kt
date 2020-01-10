@@ -5,24 +5,28 @@ import com.ryulth.worklifebell.api.dto.OnWorkTimeRequest
 import com.ryulth.worklifebell.api.exception.AlreadyOffWorkException
 import com.ryulth.worklifebell.api.exception.AlreadyOnWorkException
 import com.ryulth.worklifebell.api.exception.AttendanceNotFoundException
+import com.ryulth.worklifebell.api.model.Attendance
 import com.ryulth.worklifebell.api.model.AttendanceIdClass
 import com.ryulth.worklifebell.api.repository.AttendanceRepository
-import com.ryulth.worklifebell.api.util.UserInfoThreadLocal
+import com.ryulth.worklifebell.api.util.DateFormatUtils
+import com.ryulth.worklifebell.api.util.sumByLong
 import mu.KLogging
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.sql.SQLIntegrityConstraintViolationException
-import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.*
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters.*
 
 
 @Service
 class AttendanceService(
     val attendanceRepository: AttendanceRepository,
     val locationService: LocationService,
-    val userService: UserService
+    val userService: UserService,
+    val userSessionService: UserSessionService
 ) {
     companion object : KLogging() {
         val zoneId = ZoneId.of("Asia/Seoul")!!
@@ -30,7 +34,7 @@ class AttendanceService(
     fun onWork(): AttendanceResponse {
         val now = LocalDateTime.now(zoneId).withNano(0)
         val attendanceIdClass = AttendanceIdClass(
-            UserInfoThreadLocal.getUserInfo().id,
+            userSessionService.getCurrentUserSession().id,
             now.toLocalDate()
         )
         try {
@@ -40,15 +44,15 @@ class AttendanceService(
                 onWorkDate = now.toLocalDate() ,
                 onWorkDateTime = attendance?.onWorkDateTime,
                 offWorkDateTime = attendance?.offWorkDateTime,
-                weeklyWorkTime = calcWeeklyWorkTime(),
-                monthlyWorkTime = calcMonthlyWorkTime()
+                weeklyWorkTime = calcWeeklyWorkTime(now.toLocalDate()),
+                monthlyWorkTime = calcMonthlyWorkTime(now.toLocalDate())
             )
         } catch (e: Exception){
             when(e) {
                 is DataIntegrityViolationException,
                 is ConstraintViolationException,
                 is SQLIntegrityConstraintViolationException ->
-                    throw AlreadyOnWorkException("Today already on work $e")
+                    throw AlreadyOnWorkException("Today already on work e: $e")
                 else -> throw e
             }
         }
@@ -56,7 +60,7 @@ class AttendanceService(
     fun fixOnWorkTime(onWorkTimeRequest: OnWorkTimeRequest): AttendanceResponse {
         val now = LocalDateTime.now(zoneId).withNano(0)
         val attendanceIdClass = AttendanceIdClass(
-            UserInfoThreadLocal.getUserInfo().id,
+            userSessionService.getCurrentUserSession().id,
             now.toLocalDate()
         )
 
@@ -69,14 +73,14 @@ class AttendanceService(
             onWorkDate = now.toLocalDate() ,
             onWorkDateTime = attendance?.onWorkDateTime,
             offWorkDateTime = attendance?.offWorkDateTime,
-            weeklyWorkTime = calcWeeklyWorkTime(),
-            monthlyWorkTime = calcMonthlyWorkTime()
+            weeklyWorkTime = calcWeeklyWorkTime(now.toLocalDate()),
+            monthlyWorkTime = calcMonthlyWorkTime(now.toLocalDate())
         )
     }
     fun offWork(): AttendanceResponse {
         val now = LocalDateTime.now(zoneId).withNano(0)
         val attendanceIdClass = AttendanceIdClass(
-            UserInfoThreadLocal.getUserInfo().id,
+            userSessionService.getCurrentUserSession().id,
             now.toLocalDate()
         )
         val attendance = attendanceRepository.findByIdOrNull(attendanceIdClass)
@@ -93,25 +97,46 @@ class AttendanceService(
             onWorkDate = now.toLocalDate() ,
             onWorkDateTime = attendance?.onWorkDateTime,
             offWorkDateTime = attendance?.offWorkDateTime,
-            weeklyWorkTime = calcWeeklyWorkTime(),
-            monthlyWorkTime = calcMonthlyWorkTime()
+            weeklyWorkTime = calcWeeklyWorkTime(now.toLocalDate()),
+            monthlyWorkTime = calcMonthlyWorkTime(now.toLocalDate())
         )
     }
 
     fun getAttendanceToday(): AttendanceResponse {
         val now = LocalDateTime.now(zoneId).withNano(0)
         val attendance = attendanceRepository.findByUserIdAndOnWorkDate(
-            UserInfoThreadLocal.getUserInfo().id, now.toLocalDate()
+            userSessionService.getCurrentUserSession().id, now.toLocalDate()
         )
         return AttendanceResponse(
             onWorkDate = now.toLocalDate() ,
             onWorkDateTime = attendance?.onWorkDateTime,
             offWorkDateTime = attendance?.offWorkDateTime,
-            weeklyWorkTime = calcWeeklyWorkTime(),
-            monthlyWorkTime = calcMonthlyWorkTime()
+            weeklyWorkTime = calcWeeklyWorkTime(now.toLocalDate()),
+            monthlyWorkTime = calcMonthlyWorkTime(now.toLocalDate())
         )
     }
 
-    fun calcWeeklyWorkTime() = null
-    fun calcMonthlyWorkTime() = null
+    fun calcWeeklyWorkTime(target: LocalDate): String {
+        val start = target.with(previousOrSame(DayOfWeek.MONDAY))
+        val end = target.with(nextOrSame(DayOfWeek.SUNDAY))
+        val attendances = attendanceRepository.findByUserIdAndOnWorkDateBetween(
+            userId = userSessionService.getCurrentUserSession().id,
+            start = start,
+            end = end
+        )
+        return DateFormatUtils.localTimeOfSecondOfDay(calcWorkTime(attendances))
+    }
+    fun calcMonthlyWorkTime(target: LocalDate): String {
+        val start = target.with(firstDayOfMonth())
+        val end = target.with(lastDayOfMonth())
+        val attendances = attendanceRepository.findByUserIdAndOnWorkDateBetween(
+            userId = userSessionService.getCurrentUserSession().id,
+            start = start,
+            end = end
+        )
+        return DateFormatUtils.localTimeOfSecondOfDay(calcWorkTime(attendances))
+    }
+    private fun calcWorkTime(attendances: List<Attendance>): Long {
+        return attendances.sumByLong { it.onWorkDateTime?.until(it.offWorkDateTime?: it.onWorkDateTime, ChronoUnit.SECONDS)!! }
+    }
 }

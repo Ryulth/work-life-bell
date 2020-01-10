@@ -1,7 +1,5 @@
 package com.ryulth.worklifebell.api.controller
 
-import com.ryulth.worklifebell.api.util.UserInfoThreadLocal
-import com.ryulth.worklifebell.api.util.UserThreadLocal
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

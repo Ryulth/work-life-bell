@@ -2,7 +2,7 @@ package com.ryulth.worklifebell.api.auth
 
 import com.ryulth.worklifebell.api.auth.jwt.JwtProvider
 import com.ryulth.worklifebell.api.exception.UnauthorizedException
-import com.ryulth.worklifebell.api.util.UserInfoThreadLocal
+import com.ryulth.worklifebell.api.service.UserSessionService
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import mu.KLogging
@@ -11,7 +11,8 @@ import org.springframework.web.servlet.HandlerInterceptor
 
 @Component
 class TokenInterceptor(
-    val jwtProvider: JwtProvider
+    private val jwtProvider: JwtProvider,
+    private val userSessionService: UserSessionService
 ) : HandlerInterceptor {
 
     companion object : KLogging()
@@ -22,10 +23,10 @@ class TokenInterceptor(
         }
         try {
             val token = request.getHeader("Authorization").split("Bearer ").toTypedArray()[1]
-            val userInfo = jwtProvider.getUserInfo(token, true)
+            val userSession = jwtProvider.getUserSession(token, true)
 
             // ThreadLocal 등록
-            UserInfoThreadLocal.setUserInfo(userInfo)
+            userSessionService.setCurrentUserSession(userSession)
             return true
         } catch (e: Exception) {
             when (e) {

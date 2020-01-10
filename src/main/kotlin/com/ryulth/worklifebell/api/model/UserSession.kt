@@ -1,6 +1,6 @@
 package com.ryulth.worklifebell.api.model
 
-data class UserInfo(
+data class UserSession(
     val id: Long,
     val email: String
 )
